@@ -728,19 +728,6 @@ class Plugin {
 	}
 
 	/**
-	 * Adds pixels to image dimension.
-	 *
-	 * @param int $value - image dimension.
-	 *
-	 * @return string - image dimension with px suffix.
-	 *
-	 * @since 0.0.2
-	 */
-	protected function add_pixels( int $value ): string {
-		return sprintf( '%dpx', $value );
-	}
-
-	/**
 	 * Renders image width attribute.
 	 *
 	 * @param int    $id   - image ID.
@@ -756,7 +743,7 @@ class Plugin {
 			return '';
 		}
 
-		return $this->add_pixels( $image_source[1] );
+		return absint( $image_source[1] );
 	}
 
 	/**
@@ -775,7 +762,7 @@ class Plugin {
 			return '';
 		}
 
-		return $this->add_pixels( $image_source[2] );
+		return absint( $image_source[2] );
 	}
 
 	/**
