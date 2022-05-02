@@ -1,0 +1,80 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: WordPress Responsive Images for SliderPro\n"
+"POT-Creation-Date: 2022-05-02 14:27+0200\n"
+"PO-Revision-Date: 2022-05-02 14:27+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"X-Generator: Poedit 3.0.1\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-Flags-xgettext: --add-comments=translators:\n"
+"X-Poedit-WPHeader: wp-responsive-images-sliderpro.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.min.js\n"
+
+#: src/Plugin.php:408
+#, php-format
+msgid "%1$s requires %2$s to be installed and activated."
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+#: src/Plugin.php:409 src/Plugin.php:427
+msgid "WordPress Responsive Images for SliderPro"
+msgstr ""
+
+#: src/Plugin.php:410
+msgid "SliderPro"
+msgstr ""
+
+#: src/Plugin.php:426
+#, php-format
+msgid ""
+"%1$s may conflict with following settings in %2$s plugin: %3$s. Please, "
+"check %2$s plugin configuration for exceptions or disable the mentioned "
+"settings."
+msgstr ""
+
+#: src/Plugin.php:428
+msgid "EWWW Image Optimizer"
+msgstr ""
+
+#: src/Plugin.php:434
+msgid "Lazy Load"
+msgstr ""
+
+#: src/Plugin.php:435
+msgid "Automatic Scaling"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid ""
+"https://github.com/sergeliatko/wp-responsive-images-sliderpro?"
+"utm_source=wordpress&utm_medium=plugin&utm_campaign=wp-responsive-images-"
+"sliderpro&utm_content=plugin-link"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"Adds support for WordPress native lazy image loading, image srcset and sizes "
+"HTML attributes to SliderPro plugin."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Serge Liatko"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid ""
+"https://techspokes.com?"
+"utm_source=wordpress&utm_medium=plugin&utm_campaign=wp-responsive-images-"
+"sliderpro&utm_content=author-link"
+msgstr ""

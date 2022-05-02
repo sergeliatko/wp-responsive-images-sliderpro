@@ -11,7 +11,7 @@
  * Plugin Name: WordPress Responsive Images for SliderPro
  * Plugin URI:  https://github.com/sergeliatko/wp-responsive-images-sliderpro?utm_source=wordpress&utm_medium=plugin&utm_campaign=wp-responsive-images-sliderpro&utm_content=plugin-link
  * Description: Adds support for WordPress native lazy image loading, image srcset and sizes HTML attributes to SliderPro plugin.
- * Version:     0.0.3
+ * Version:     0.0.4
  * Author:      Serge Liatko
  * Author URI:  https://techspokes.com?utm_source=wordpress&utm_medium=plugin&utm_campaign=wp-responsive-images-sliderpro&utm_content=author-link
  * Text Domain: wp-responsive-images-sliderpro
