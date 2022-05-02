@@ -81,6 +81,16 @@ class Plugin {
 			// abort plugin workflow
 			return;
 		}
+		// check if ewww-image-optimizer plugin is active
+		if ( is_admin() && is_plugin_active( 'ewww-image-optimizer/ewww-image-optimizer.php' ) ) {
+			$conflicting_options = array_filter( array(
+				get_option( 'ewww_image_optimizer_lazy_load', false ),
+				get_option( 'ewww_image_optimizer_ll_autoscale', false ),
+			) );
+			if ( ! empty( $conflicting_options ) ) {
+				add_action( 'admin_notices', array( $this, 'ewww_image_optimizer_conflict_notice' ), 10 );
+			}
+		}
 		// fix lightbox image size issue
 		add_filter( 'sliderpro_data', array( $this, 'fix_lightbox_image_size_issue' ), 10, 1 );
 		// rewrite SliderPro renderers
@@ -398,6 +408,33 @@ class Plugin {
 				__( '%1$s requires %2$s to be installed and activated.', 'wp-responsive-images-sliderpro' ),
 				'<strong>' . __( 'WordPress Responsive Images for SliderPro', 'wp-responsive-images-sliderpro' ) . '</strong>',
 				'<strong>' . __( 'SliderPro', 'wp-responsive-images-sliderpro' ) . '</strong>'
+			)
+		);
+	}
+
+	/**
+	 * Displays notice about conflicting options with ewww image optimizer.
+	 *
+	 * @return void
+	 *
+	 * @since 0.0.3
+	 */
+	public function ewww_image_optimizer_conflict_notice(): void {
+		printf(
+			'<div class="notice notice-warning is-dismissible"><p>%s</p></div>',
+			sprintf(
+				__( '%1$s may conflict with following settings in %2$s plugin: %3$s. Please, check %2$s plugin configuration for exceptions or disable the mentioned settings.', 'wp-responsive-images-sliderpro' ),
+				'<strong>' . __( 'WordPress Responsive Images for SliderPro', 'wp-responsive-images-sliderpro' ) . '</strong>',
+				'<strong>' . __( 'EWWW Image Optimizer', 'wp-responsive-images-sliderpro' ) . '</strong>',
+				join( ', ', array_map(
+					function ( $settings ) {
+						return '<em>' . $settings . '</em>';
+					},
+					array(
+						__( 'Lazy Load', 'wp-responsive-images-sliderpro' ),
+						__( 'Automatic Scaling', 'wp-responsive-images-sliderpro' ),
+					)
+				) )
 			)
 		);
 	}
