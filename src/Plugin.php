@@ -95,12 +95,39 @@ class Plugin {
 		add_filter( 'sliderpro_data', array( $this, 'fix_lightbox_image_size_issue' ), 10, 1 );
 		// rewrite SliderPro renderers
 		add_filter( 'sliderpro_default_slide_settings', array( $this, 'rewrite_sliderpro_renderers' ), 25, 1 );
-		// reformat templated images in slide renderer html
-		add_filter( 'sliderpro_slide_markup', array( $this, 'reformat_templated_images' ), 10, 1 );
 		// add image render functions to sliderpro gallery slider
 		add_filter( 'sliderpro_gallery_tags', array( $this, 'sliderpro_gallery_dynamic_tags' ), 10, 1 );
 		// add image render functions to sliderpro posts slider
 		add_filter( 'sliderpro_posts_tags', array( $this, 'sliderpro_posts_dynamic_tags' ), 10, 1 );
+		// reformat templated images in slide renderer html
+		add_filter( 'sliderpro_slide_markup', array( $this, 'reformat_templated_images' ), 10, 1 );
+		// remove lazy loading from the first slide image
+		add_filter( 'sliderpro_markup', array( $this, 'remove_lazy_loading_from_first_image' ), 25, 1 );
+	}
+
+	/**
+	 * Removes the lazy loading from the first image in the slider.
+	 *
+	 * @param string $markup - slider markup.
+	 *
+	 * @return string - modified slider markup.
+	 *
+	 * @since 0.0.6
+	 */
+	public function remove_lazy_loading_from_first_image( string $markup ): string {
+		if ( false === strpos( $markup, 'sp-image' ) ) {
+			return $markup;
+		}
+		if (
+			preg_match_all( '/<img.*class=["\'].?sp-image["\' ]?.+[^\/>]\/>/', $markup, $matches )
+			&& ! empty( $matches[0] )
+			&& is_array( $matches[0] )
+		) {
+			$image  = preg_replace( '/\sloading=(["\'])lazy(["\'])/', ' loading=$1eager$2', $matches[0][0] );
+			$markup = str_replace( $matches[0][0], $image, $markup );
+		}
+
+		return $markup;
 	}
 
 	/**
