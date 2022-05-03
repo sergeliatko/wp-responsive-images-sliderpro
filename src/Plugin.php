@@ -127,9 +127,17 @@ class Plugin {
 		) {
 			$slider         = BQW_SliderPro::get_instance()->get_slider( $id );
 			$visible_slides = absint( $slider['settings']['visible_size'] ?? 1 );
-			for ( $i = 0; $i < $visible_slides; $i ++ ) {
-				$image  = preg_replace( '/\sloading=(["\'])lazy(["\'])/', ' loading=$1eager$2', $matches[0][ $i ] );
-				$markup = str_replace( $matches[0][ $i ], $image, $markup );
+			if ( $visible_slides > 1 ) {
+				for ( $i = 0; $i < $visible_slides; $i ++ ) {
+					if ( ! empty( $matches[0][ $i ] ) ) {
+						$markup = $this->disable_lazy_loading( $matches[0][ $i ], $markup );
+					}
+				}
+				if ( 0 < ( $last_slide_index = count( $matches[0] ) - 1 ) ) {
+					$markup = $this->disable_lazy_loading( $matches[0][ $last_slide_index ], $markup );
+				}
+			} else {
+				$markup = $this->disable_lazy_loading( $matches[0][0], $markup );
 			}
 		}
 
@@ -853,6 +861,25 @@ class Plugin {
 		}
 
 		return $sizes;
+	}
+
+	/**
+	 * Disables the image lazy loading.
+	 *
+	 * @param string $image - image to be processed.
+	 * @param string $html  - content HTML containing the image.
+	 *
+	 * @return string - processed HTML content.
+	 *
+	 * @since 0.0.8
+	 */
+	protected function disable_lazy_loading( string $image, string $html ): string {
+		$replacement = preg_replace( '/\sloading=(["\'])lazy(["\'])/', ' loading=$1eager$2', $image );
+		if ( empty( $replacement ) || ( $replacement === $image ) ) {
+			return $html;
+		}
+
+		return str_replace( $image, $replacement, $html );
 	}
 
 }
