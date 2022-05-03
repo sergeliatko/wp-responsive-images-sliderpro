@@ -4,6 +4,7 @@
 namespace SergeLiatko\WPResponsiveImagesSliderPro;
 
 
+use BQW_SliderPro;
 use WP_Post;
 
 /**
@@ -102,19 +103,20 @@ class Plugin {
 		// reformat templated images in slide renderer html
 		add_filter( 'sliderpro_slide_markup', array( $this, 'reformat_templated_images' ), 10, 1 );
 		// remove lazy loading from the first slide image
-		add_filter( 'sliderpro_markup', array( $this, 'remove_lazy_loading_from_first_image' ), 25, 1 );
+		add_filter( 'sliderpro_markup', array( $this, 'remove_lazy_loading_from_visible_slides' ), 25, 2 );
 	}
 
 	/**
 	 * Removes the lazy loading from the first image in the slider.
 	 *
 	 * @param string $markup - slider markup.
+	 * @param int    $id
 	 *
 	 * @return string - modified slider markup.
 	 *
 	 * @since 0.0.6
 	 */
-	public function remove_lazy_loading_from_first_image( string $markup ): string {
+	public function remove_lazy_loading_from_visible_slides( string $markup, int $id ): string {
 		if ( false === strpos( $markup, 'sp-image' ) ) {
 			return $markup;
 		}
@@ -123,8 +125,12 @@ class Plugin {
 			&& ! empty( $matches[0] )
 			&& is_array( $matches[0] )
 		) {
-			$image  = preg_replace( '/\sloading=(["\'])lazy(["\'])/', ' loading=$1eager$2', $matches[0][0] );
-			$markup = str_replace( $matches[0][0], $image, $markup );
+			$slider         = BQW_SliderPro::get_instance()->get_slider( $id );
+			$visible_slides = absint( $slider['settings']['visible_size'] ?? 1 );
+			for ( $i = 0; $i < $visible_slides; $i ++ ) {
+				$image  = preg_replace( '/\sloading=(["\'])lazy(["\'])/', ' loading=$1eager$2', $matches[0][ $i ] );
+				$markup = str_replace( $matches[0][ $i ], $image, $markup );
+			}
 		}
 
 		return $markup;
