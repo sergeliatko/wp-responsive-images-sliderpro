@@ -75,23 +75,8 @@ class Plugin {
 	 * @since 0.0.1
 	 */
 	protected function __construct() {
-		// before we start check if SliderPro plugin is active
-		if ( ! is_plugin_active( 'sliderpro/sliderpro.php' ) ) {
-			add_action( 'admin_notices', array( $this, 'sliderpro_not_active_notice' ), 10 );
-
-			// abort plugin workflow
-			return;
-		}
-		// check if ewww-image-optimizer plugin is active
-		if ( is_admin() && is_plugin_active( 'ewww-image-optimizer/ewww-image-optimizer.php' ) ) {
-			$conflicting_options = array_filter( array(
-				get_option( 'ewww_image_optimizer_lazy_load', false ),
-				get_option( 'ewww_image_optimizer_ll_autoscale', false ),
-			) );
-			if ( ! empty( $conflicting_options ) ) {
-				add_action( 'admin_notices', array( $this, 'ewww_image_optimizer_conflict_notice' ), 10 );
-			}
-		}
+		// handle admin notices
+		add_action( 'admin_init', array( $this, 'on_admin_init' ) );
 		// fix lightbox image size issue
 		add_filter( 'sliderpro_data', array( $this, 'fix_lightbox_image_size_issue' ), 10, 1 );
 		// rewrite SliderPro renderers
@@ -104,6 +89,28 @@ class Plugin {
 		add_filter( 'sliderpro_slide_markup', array( $this, 'reformat_templated_images' ), 10, 1 );
 		// remove lazy loading from the first slide image
 		add_filter( 'sliderpro_markup', array( $this, 'remove_lazy_loading_from_visible_slides' ), 25, 2 );
+	}
+
+	/**
+	 * Checks if we need to output admin notices.
+	 *
+	 * @return void
+	 */
+	public function on_admin_init(): void {
+		// check if SliderPro plugin is active
+		if ( ! is_plugin_active( 'sliderpro/sliderpro.php' ) ) {
+			add_action( 'admin_notices', array( $this, 'sliderpro_not_active_notice' ) );
+		}
+		// check if ewww-image-optimizer plugin is active
+		if ( is_admin() && is_plugin_active( 'ewww-image-optimizer/ewww-image-optimizer.php' ) ) {
+			$conflicting_options = array_filter( array(
+				get_option( 'ewww_image_optimizer_lazy_load', false ),
+				get_option( 'ewww_image_optimizer_ll_autoscale', false ),
+			) );
+			if ( ! empty( $conflicting_options ) ) {
+				add_action( 'admin_notices', array( $this, 'ewww_image_optimizer_conflict_notice' ), 10 );
+			}
+		}
 	}
 
 	/**
@@ -125,20 +132,8 @@ class Plugin {
 			&& ! empty( $matches[0] )
 			&& is_array( $matches[0] )
 		) {
-			$slider         = BQW_SliderPro::get_instance()->get_slider( $id );
-			$visible_slides = absint( $slider['settings']['visible_size'] ?? 1 );
-			if ( $visible_slides > 1 ) {
-				for ( $i = 0; $i < $visible_slides; $i ++ ) {
-					if ( ! empty( $matches[0][ $i ] ) ) {
-						$markup = $this->disable_lazy_loading( $matches[0][ $i ], $markup );
-					}
-				}
-				if ( 0 < ( $last_slide_index = count( $matches[0] ) - 1 ) ) {
-					$markup = $this->disable_lazy_loading( $matches[0][ $last_slide_index ], $markup );
-				}
-			} else {
-				$markup = $this->disable_lazy_loading( $matches[0][0], $markup );
-			}
+			// make sure the first image is not lazy loaded
+			$markup = $this->disable_lazy_loading( $matches[0][0], $markup );
 		}
 
 		return $markup;
@@ -589,7 +584,7 @@ class Plugin {
 	/**
 	 * Adds replacement for the image tag in the slide HTML to the template.
 	 *
-	 * @param array $template - array of image template. Passed by reference.
+	 * @param array     $template - array of image template. Passed by reference.
 	 *
 	 * @param-out array $template - modified template.
 	 *
